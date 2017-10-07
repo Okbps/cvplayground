@@ -143,9 +143,10 @@ public class UploadServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        System.load(getResourcePath("/bin/" + Core.NATIVE_LIBRARY_NAME + ".dll"));
-//        System.load("D:/Soft/Java/Projects/cvplayground/src/main/resources/bin/opencv_java330.dll");
+        //Place opencv_java330.dll in %classpath%\bin
+        //Run JVM with -Djava.library.path="%classpath%\bin"
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
         loadCascade();
 
         Mat image = receiveImage(req);
