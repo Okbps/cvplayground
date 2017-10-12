@@ -1,17 +1,26 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Aspire
-  Date: 30.09.2017
-  Time: 11:07
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+         pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<link rel="stylesheet" href="resources/css/style.css">
-<head>
-    <title>$Title$</title>
-</head>
+<jsp:include page="headTag.jsp"/>
 <body>
-$END$
+
+<form id="fileForm" runat="server">
+    <label for="sampleFile">Select image</label>
+    <input id="sampleFile" name="sampleFile" type="file" />
+    <input id="uploadBtn" type="button" value="Submit" onClick="performSubmit();"></input>
+    <br>
+
+    <div class="divTable">
+        <div class="divTableBody">
+            <div class="divTableRow">
+                <div class="divTableCell"><img id="srcImage" alt="source image" height="300" width="300"/></div>
+                <div class="divTableCell"><img id="modImage" alt="modified image" height="300" width="300" /></div>
+            </div>
+        </div>
+    </div>
+</form>
+
 </body>
 </html>

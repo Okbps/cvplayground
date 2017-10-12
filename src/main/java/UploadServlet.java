@@ -4,12 +4,12 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.security.SecureRandom;
 
 @MultipartConfig(fileSizeThreshold = 1024*1024*2,
 maxFileSize = 1024*1024*10,
@@ -39,7 +39,7 @@ public class UploadServlet extends HttpServlet{
     }
 
     private byte[] receiveImageBytes(HttpServletRequest req) throws IOException, ServletException {
-        InputStream is = req.getPart("fileatr").getInputStream();
+        InputStream is = req.getPart("sampleFile").getInputStream();
 
         BufferedInputStream bin = new BufferedInputStream(is);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -131,16 +131,6 @@ public class UploadServlet extends HttpServlet{
         return dest;
     }
 
-    private void writeResponse(HttpServletResponse resp, Mat image) throws IOException {
-        MatOfByte outBuffer = new MatOfByte();
-        Imgcodecs.imencode(".jpg", image, outBuffer);
-
-        resp.setContentType("image/jpeg");
-        ServletOutputStream out = resp.getOutputStream();
-
-        out.write(outBuffer.toArray());
-    }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Place opencv_java330.dll in %classpath%\bin
@@ -153,7 +143,58 @@ public class UploadServlet extends HttpServlet{
         Mat overlay = loadOverlayImage();
 
         detectFaceAndDrawHat(image, overlay);
-        writeResponse(resp, image);
+
+        String fileName = getRandomName()+".jpg";
+        Imgcodecs.imwrite(getResourcePath("images")+fileName, image);
+
+        OutputStream out = resp.getOutputStream();
+        out.write(fileName.getBytes());
+        out.flush();
+        out.close();
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String img = req.getParameter("img");
+
+        String fileName = getResourcePath("images")+img;
+        OutputStream out = resp.getOutputStream();
+
+        resp.setContentType(getServletContext().getMimeType(fileName));
+        long fileSize = copy(new FileInputStream(fileName), out);
+        resp.setContentLength((int) fileSize);
+
+        out.flush();
+        out.close();
+    }
+
+    private String getFileExtension(String name) {
+        return name.substring(name.lastIndexOf("."));
+    }
+
+    private String getRandomName(){
+        final SecureRandom random = new SecureRandom();
+
+        long n = random.nextLong();
+        if (n == Long.MIN_VALUE) {
+            n = 0;      // corner case
+        } else {
+            n = Math.abs(n);
+        }
+
+       return Long.toString(n);
+
+    }
+
+    private long copy(InputStream source, OutputStream sink) throws IOException
+    {
+        long nread = 0L;
+        byte[] buf = new byte[8192];
+        int n;
+        while ((n = source.read(buf)) > 0) {
+            sink.write(buf, 0, n);
+            nread += n;
+        }
+        return nread;
+    }
 }
