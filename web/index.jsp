@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -15,8 +14,8 @@
     <div class="divTable">
         <div class="divTableBody">
             <div class="divTableRow">
-                <div class="divTableCell"><img id="srcImage" alt="source image" height="300" width="300"/></div>
-                <div class="divTableCell"><img id="modImage" alt="modified image" height="300" width="300" /></div>
+                <div class="divTableCell"><img id="srcImage" alt="source image" /></div>
+                <div class="divTableCell"><img id="modImage" alt="modified image" /></div>
             </div>
         </div>
     </div>
