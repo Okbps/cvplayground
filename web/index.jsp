@@ -8,7 +8,13 @@
 <form id="fileForm" runat="server">
     <label for="sampleFile">Select image</label>
     <input id="sampleFile" name="sampleFile" type="file" />
-    <input id="uploadBtn" type="button" value="Submit" onClick="performSubmit();"></input>
+
+    <label for="hatGrowthFactor">Hat factor</label>
+    <input id="hatGrowthFactor" name="hatGrowthFactor" type="number" step="0.01" min="0" value="3.0">
+
+    <label for="hatOffsetY">Hat Y-offset</label>
+    <input id="hatOffsetY" name="hatOffsetY" type="number" step="0.01" value="0.8">
+    <input id="uploadBtn" type="button" value="Submit" onClick="performSubmit();">
     <br>
 
     <div class="divTable">

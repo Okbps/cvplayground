@@ -24,6 +24,9 @@ public class UploadController extends HttpServlet{
         buffer.flush();
         buffer.close();
 
+        service.setHatGrowthFactor(Double.parseDouble(req.getParameter("hatGrowthFactor")));
+        service.setHatOffsetY(Double.parseDouble(req.getParameter("hatOffsetY")));
+
         String fileName = service.getModifiedImage(buffer.toByteArray());
 
         OutputStream out = resp.getOutputStream();

@@ -5,11 +5,21 @@ import org.opencv.objdetect.CascadeClassifier;
 
 public class UploadService {
     private CascadeClassifier faceDetector;
+    private double hatGrowthFactor = 2.3;
+    private double hatOffsetY = 0.6;
 
     static {
         //Place opencv_java330.dll in %classpath%\bin
         //Run JVM with -Djava.library.path="%classpath%\bin"
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    }
+
+    public void setHatGrowthFactor(double hatGrowthFactor) {
+        this.hatGrowthFactor = hatGrowthFactor;
+    }
+
+    public void setHatOffsetY(double hatOffsetY) {
+        this.hatOffsetY = hatOffsetY;
     }
 
     private void loadCascade(){
@@ -46,17 +56,16 @@ public class UploadService {
 
     private void detectFaceAndDrawHat(Mat image, Mat overlay){
         MatOfRect faceDetections = new MatOfRect();
-        faceDetector.detectMultiScale(image, faceDetections, 1.1, 7, 0, new Size(),  new Size());
+        faceDetector.detectMultiScale(image, faceDetections); //, 1.1, 7, 0, new Size(),  new Size()
 
         for(Rect rect: faceDetections.toArray()){
-            double hatGrowthFactor = 2.3;//1.8;
 
             int hatWidth = (int) (rect.width *hatGrowthFactor);
             int hatHeight = (int) (hatWidth * overlay.height() / overlay.width());
 
             //region of interest
             int roiX =  rect.x - (hatWidth-rect.width)/2;
-            int roiY =  (int) (rect.y  - 0.6*hatHeight);
+            int roiY =  (int) (rect.y  - hatOffsetY *hatHeight);
             roiX =  roiX<0?0:roiX;
             roiY = roiY<0?0:roiY;
 
@@ -72,6 +81,14 @@ public class UploadService {
         }
     }
 
+    private void detectAndDrawFace(Mat image) {
+        MatOfRect faceDetections = new MatOfRect();
+        faceDetector.detectMultiScale(	image, faceDetections, 1.1, 7,0,new Size(250,40),new Size());
+        // Draw a bounding box around each face.
+        for (Rect rect : faceDetections.toArray()) {
+            Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+        }
+    }
     private Mat overlayImage(Mat background, Mat foreground, Point location){
         Mat dest = new Mat(background.size(), background.type());
         background.copyTo(dest);
