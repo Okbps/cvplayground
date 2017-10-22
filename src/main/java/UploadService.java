@@ -3,6 +3,10 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class UploadService {
     private CascadeClassifier faceDetector;
     private double hatGrowthFactor = 2.3;
@@ -32,7 +36,6 @@ public class UploadService {
         encodedMat.put(0, 0, bytes);
         return Imgcodecs.imdecode(encodedMat, Imgcodecs.CV_LOAD_IMAGE_ANYCOLOR);
     }
-
 
     private Mat loadOverlayImage(){
         String overlayFileName = Utils.getResourcePath("images/fedora.png");
@@ -89,6 +92,7 @@ public class UploadService {
             Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
         }
     }
+
     private Mat overlayImage(Mat background, Mat foreground, Point location){
         Mat dest = new Mat(background.size(), background.type());
         background.copyTo(dest);
@@ -120,7 +124,7 @@ public class UploadService {
         return dest;
     }
 
-    public String getModifiedImage (byte[] imageBytes) {
+    public String getModifiedImage (byte[] imageBytes, String fileName) {
 
         loadCascade();
 
@@ -129,10 +133,61 @@ public class UploadService {
 
         detectFaceAndDrawHat(image, overlay);
 
-        String fileName = Utils.getRandomName()+".jpg";
-        Imgcodecs.imwrite(Utils.getResourcePath("images")+fileName, image);
+        if(fileName.isEmpty()) {
+            fileName = "images/"+Utils.getRandomName("jpg");
+        }
+
+        Imgcodecs.imwrite(Utils.getResourcePath(fileName), image);
 
         return fileName;
     }
 
+    private void createAlphaFromWhite(String fileName){
+        Mat mat1 = Imgcodecs.imread(fileName);
+        Mat mask = new Mat(mat1.size(), CvType.CV_8U);
+
+        final double[]white = {255,255,255};
+
+        for (int i = 0; i < mat1.rows(); i++) {
+            for (int j = 0; j < mat1.cols(); j++) {
+                double[]pixel = mat1.get(i, j);
+                if(Arrays.equals(pixel, white)){
+                    mask.put(i, j, 0);
+                }else{
+                    mask.put(i, j, 255);
+                }
+            }
+        }
+
+        List<Mat>layers = new ArrayList<>();
+        Core.split(mat1, layers);
+        layers.add(mask);
+
+        Mat mat2 = new Mat(mat1.size(), CvType.CV_32S);
+        Core.merge(layers, mat2);
+
+        Imgcodecs.imwrite(fileName+".png", mat2);
+    }
+
+    public String generateAvatarByConfig(String fileName){
+        FeatureLayer[]layers = Utils.getFeatureLayers();
+
+        Mat mResult = new Mat(new Size(1024, 1024), CvType.CV_8UC(3), new Scalar(255, 255, 255));
+
+        for (FeatureLayer layer : layers) {
+            if(layer.getAvailability() >= Utils.getRandomInt(100)){
+                String layerFile = Utils.getRandomFile(Utils.getResourcePath("images/person/"+layer.getPath()));
+                Mat mLayer = Imgcodecs.imread(layerFile, Imgcodecs.IMREAD_UNCHANGED);
+                mResult = overlayImage(mResult, mLayer, new Point());
+            }
+        }
+
+        if(fileName.isEmpty()) {
+            fileName = "images/person/"+Utils.getRandomName("jpg");
+        }
+
+        Imgcodecs.imwrite(Utils.getResourcePath(fileName), mResult);
+
+        return fileName;
+    }
 }

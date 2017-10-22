@@ -13,7 +13,9 @@ function  performSubmit(input){
         async:true,
         datatype: 'image/jpeg',
         success: function(data){
-            $('#modImage').attr('src', '/upload?img='+data);
+            var arr = $.parseJSON(data);
+            // $('#modImage').attr('src', '/upload?img='+arr[0]+"&timestamp=" + new Date().getTime());
+            $('#avImage').attr('src', '/upload?img='+arr[1]+"&timestamp=" + new Date().getTime());
         }
     });
 }
