@@ -31,9 +31,6 @@ public class UploadController extends HttpServlet{
         buffer.flush();
         buffer.close();
 
-//        service.setHatGrowthFactor(Double.parseDouble(req.getParameter("hatGrowthFactor")));
-//        service.setHatOffsetY(Double.parseDouble(req.getParameter("hatOffsetY")));
-
         String submittedSource = req.getPart("sampleFile").getSubmittedFileName();
 
         if(!submittedSource.equals(lastSource)) {
@@ -42,8 +39,6 @@ public class UploadController extends HttpServlet{
             lastSource = submittedSource;
         }
 
-//        fileNames[0] = service.getModifiedImage(buffer.toByteArray(), fileNames[0]);
-//        fileNames[1] = service.generateAvatar(fileNames[1]);
         fileNames[1] = service.generateAvatarByConfig(fileNames[1]);
 
         OutputStream out = resp.getOutputStream();
@@ -58,9 +53,20 @@ public class UploadController extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String img = req.getParameter("img");
+        String imgName = req.getParameter("img");
+        String jsonName = req.getParameter("json");
 
-        String fileName = Utils.getResourcePath("")+img;
+        if(imgName!=null){
+            doGetImage(resp, imgName);
+        }
+
+        if(jsonName!=null){
+            doGetJson(resp, imgName);
+        }
+    }
+
+    private void doGetImage(HttpServletResponse resp, String imgName) throws IOException {
+        String fileName = Utils.getResourcePath("")+imgName;
         OutputStream out = resp.getOutputStream();
 
         resp.setContentType(getServletContext().getMimeType(fileName));
@@ -69,5 +75,23 @@ public class UploadController extends HttpServlet{
 
         out.flush();
         out.close();
+    }
+
+    private void doGetJson(HttpServletResponse resp, String imgName) throws IOException {
+        FeatureLayer[]layers = Utils.getFeatureLayers();
+        FeatureLayerDTO[]dtos = new FeatureLayerDTO[layers.length];
+
+        for (int i = 0; i < layers.length; i++) {
+            dtos[i] = new FeatureLayerDTO(layers[i]);
+        }
+
+        OutputStream out = resp.getOutputStream();
+
+        Utils.writeJson(out, dtos);
+
+        out.flush();
+        out.close();
+
+        resp.setContentType("application/json");
     }
 }

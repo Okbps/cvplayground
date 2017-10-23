@@ -84,8 +84,6 @@ class Utils {
             ObjectMapper mapper = new ObjectMapper();
             layers = mapper.readValue(jsonData, FeatureLayer[].class);
 
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,7 +1,6 @@
-public class FeatureLayer implements Comparable{
+public class FeatureLayer{
     private String path;
     private String alias;
-    private int order;
     private int availability;
 
     public String getPath() {
@@ -20,14 +19,6 @@ public class FeatureLayer implements Comparable{
         this.alias = alias;
     }
 
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
     public int getAvailability() {
         return availability;
     }
@@ -41,13 +32,7 @@ public class FeatureLayer implements Comparable{
         return "FeatureLayer{" +
                 "path='" + path + '\'' +
                 ", alias='" + alias + '\'' +
-                ", order=" + order +
                 ", availability=" + availability +
                 '}';
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return getOrder() - ((FeatureLayer)o).getOrder();
     }
 }

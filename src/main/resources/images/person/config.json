@@ -2,85 +2,71 @@
   {
     "path":"001",
     "alias":"body",
-    "order":1,
     "availability":100
   },
   {
     "path":"013",
     "alias":"socks",
-    "order":13,
     "availability":30
   },
   {
     "path":"011",
     "alias":"trousers",
-    "order":11,
     "availability":95
   },
   {
     "path":"008",
     "alias":"shirt",
-    "order":8,
     "availability":95
   },
   {
     "path":"009",
     "alias":"jacket",
-    "order":9,
     "availability":60
   },
   {
     "path":"010",
     "alias":"tie",
-    "order":10,
     "availability":10
   },
   {
     "path":"012",
     "alias":"belt",
-    "order":12,
     "availability":30
   },
   {
     "path":"014",
     "alias":"boots",
-    "order":14,
     "availability":95
   },
   {
     "path":"002",
     "alias":"head",
-    "order":2,
     "availability":100
   },
   {
     "path":"003",
     "alias":"mouth",
-    "order":3,
     "availability":100
   },
   {
     "path":"004",
     "alias":"face",
-    "order":4,
     "availability":100
   },
   {
     "path":"005",
     "alias":"glasses",
-    "order":5,
     "availability":30
   },
   {
     "path":"006",
     "alias":"hair",
-    "order":6,
     "availability":95
   },
   {
     "path":"007",
     "alias":"hat",
-    "order":7,
     "availability":60
   }
 ]

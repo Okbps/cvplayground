@@ -1,3 +1,24 @@
+$(function () {
+    $.get("upload?json", updateItemsListByData);
+})
+
+function updateItemsListByData(data) {
+    var arr = $.parseJSON(data);
+    $('#featureLayers')
+        .find('option')
+        .remove()
+        .end();
+
+    $.each(arr, function (i, item) {
+        $('#featureLayers')
+            .append($('<option>', {
+                value: item.path,
+                text: item.alias
+            }))
+    })
+}
+
+
 function  performSubmit(input){
     form_data = new FormData(document.getElementById("fileForm"));
 
@@ -14,7 +35,6 @@ function  performSubmit(input){
         datatype: 'image/jpeg',
         success: function(data){
             var arr = $.parseJSON(data);
-            // $('#modImage').attr('src', '/upload?img='+arr[0]+"&timestamp=" + new Date().getTime());
             $('#avImage').attr('src', '/upload?img='+arr[1]+"&timestamp=" + new Date().getTime());
         }
     });
