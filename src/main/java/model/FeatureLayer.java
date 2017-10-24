@@ -1,3 +1,5 @@
+package model;
+
 public class FeatureLayer{
     private String path;
     private String alias;

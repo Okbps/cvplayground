@@ -1,16 +1,21 @@
+package to;
+
+import model.FeatureLayer;
+import util.Util;
+
 import java.io.File;
 import java.util.Arrays;
 
-public class FeatureLayerDTO {
+public class FeatureLayerTo {
     private String path;
     private String alias;
     private String[]fileNames;
 
-    public FeatureLayerDTO(FeatureLayer layer) {
+    public FeatureLayerTo(FeatureLayer layer) {
         this.path = layer.getPath();
         this.alias = layer.getAlias();
 
-        File[] files = Utils.getFiles(Utils.getResourcePath("images/person/"+layer.getPath()));
+        File[] files = Util.getFiles(Util.getResourcePath("images/person/"+layer.getPath()));
 
         fileNames = Arrays.stream(files)
                 .map(File::getName)

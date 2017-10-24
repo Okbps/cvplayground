@@ -1,23 +1,46 @@
-$(function () {
-    $.get("upload?json", updateItemsListByData);
-})
+var featureLayers;
+var selectedFeatures;
 
-function updateItemsListByData(data) {
-    var arr = $.parseJSON(data);
+$(function () {
+    $.get("upload?json", updateFeatureLayers);
+});
+
+function updateFeatureLayers(data) {
+    featureLayers = $.parseJSON(data);
     $('#featureLayers')
         .find('option')
         .remove()
         .end();
 
-    $.each(arr, function (i, item) {
+    $.each(featureLayers, function (i, item) {
         $('#featureLayers')
             .append($('<option>', {
                 value: item.path,
                 text: item.alias
             }))
-    })
+    });
 }
 
+function updateFeatureItems(layersInd){
+    $('#featureItems')
+        .find('option')
+        .remove()
+        .end();
+
+    featureLayers[layersInd].fileNames
+        .forEach(function (t) {
+            $('#featureItems')
+                .append($('<option>', {
+                    value: t,
+                    text: t
+                }))
+        });
+
+    var selectedItem = selectedFeatures[featureLayers[layersInd].path];
+
+    $('#featureItems option[value="'+selectedItem+'"]')
+        .prop('selected', true);
+}
 
 function  performSubmit(input){
     form_data = new FormData(document.getElementById("fileForm"));
@@ -35,7 +58,8 @@ function  performSubmit(input){
         datatype: 'image/jpeg',
         success: function(data){
             var arr = $.parseJSON(data);
-            $('#avImage').attr('src', '/upload?img='+arr[1]+"&timestamp=" + new Date().getTime());
+            $('#avImage').attr('src', '/upload?img='+arr['fileName']+"&timestamp=" + new Date().getTime());
+            selectedFeatures = arr['selectedFeatures'];
         }
     });
 }
@@ -50,9 +74,13 @@ function readURL(input) {
         };
 
         reader.readAsDataURL(input.files[0]);
-    }
+    };
 }
 
 $("#sampleFile").change(function(){
     readURL(this);
+});
+
+$("#featureLayers").change(function () {
+    updateFeatureItems(this.selectedIndex);
 });

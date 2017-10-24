@@ -1,5 +1,14 @@
+package service;
+
+import model.FeatureLayer;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
+import to.PersonTo;
+import util.Util;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UploadService {
 
@@ -40,25 +49,33 @@ public class UploadService {
         return dest;
     }
 
-    public String generateAvatarByConfig(String fileName){
-        FeatureLayer[]layers = Utils.getFeatureLayers();
+    public PersonTo generateAvatarByConfig(String fileName){
+        FeatureLayer[]layers = Util.getFeatureLayers();
+        Map<String, String>selectedFeatures = new HashMap<>();
 
         Mat mResult = new Mat(new Size(1024, 1024), CvType.CV_8UC(3), new Scalar(255, 255, 255));
 
         for (FeatureLayer layer : layers) {
-            if(layer.getAvailability() >= Utils.getRandomInt(100)){
-                String layerFile = Utils.getRandomFile(Utils.getResourcePath("images/person/"+layer.getPath()));
-                Mat mLayer = Imgcodecs.imread(layerFile, Imgcodecs.IMREAD_UNCHANGED);
+            if(layer.getAvailability() >= Util.getRandomInt(100)){
+
+                File layerFile = Util.getRandomFile(
+                        Util.getResourcePath(
+                                "images/person/"+layer.getPath()
+                        ));
+
+                Mat mLayer = Imgcodecs.imread(layerFile.getAbsolutePath(), Imgcodecs.IMREAD_UNCHANGED);
                 mResult = overlayImage(mResult, mLayer, new Point());
+
+                selectedFeatures.put(layer.getPath(), layerFile.getName());
             }
         }
 
-        if(fileName.isEmpty()) {
-            fileName = "images/person/"+Utils.getRandomName("jpg");
-        }
+        Imgcodecs.imwrite(Util.getResourcePath(fileName), mResult);
 
-        Imgcodecs.imwrite(Utils.getResourcePath(fileName), mResult);
+        PersonTo person = new PersonTo();
+        person.setFileName(fileName);
+        person.setSelectedFeatures(selectedFeatures);
 
-        return fileName;
+        return person;
     }
 }

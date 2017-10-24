@@ -1,4 +1,7 @@
+package util;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import model.FeatureLayer;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -6,9 +9,9 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Random;
 
-class Utils {
+public class Util {
 
-    static long copy(InputStream source, OutputStream sink) throws IOException
+    public static long copy(InputStream source, OutputStream sink) throws IOException
     {
         long nread = 0L;
         byte[] buf = new byte[8192];
@@ -20,7 +23,7 @@ class Utils {
         return nread;
     }
 
-    static String getRandomName(String ext){
+    public static String getRandomName(String prefix, String ext){
         final SecureRandom random = new SecureRandom();
 
         long n = random.nextLong();
@@ -30,42 +33,45 @@ class Utils {
             n = Math.abs(n);
         }
 
-        return Long.toString(n) + (ext.isEmpty() ? "" : ".") + ext;
+        return prefix + Long.toString(n) + (ext.isEmpty() ? "" : ".") + ext;
 
     }
 
-    static String getFileExtension(String name) {
+    public static String getFileExtension(String name) {
         return name.substring(name.lastIndexOf("."));
     }
 
-    static String getResourcePath(String path){
-        String absoluteName = Utils.class.getResource("").getPath()+path;
+    public static String getResourcePath(String path){
+        String absoluteName = Util.class.getClassLoader()
+                .getResource("")
+                .getPath()+path;
+
         return absoluteName.replaceFirst("/", "");
     }
 
-    static File[] getFiles(String folderPath){
+    public static File[] getFiles(String folderPath){
         File folder = new File(folderPath);
         return folder.listFiles();
     }
 
-    static String getRandomFile(String folderPath){
+    public static File getRandomFile(String folderPath){
         File[]files = getFiles(folderPath);
 
-        return files[getRandomInt(files.length)].getAbsolutePath();
+        return files[getRandomInt(files.length)];
     }
 
-    static int getRandomInt(int bound){
+    public static int getRandomInt(int bound){
         return new Random().nextInt(bound);
     }
 
-    static boolean getRandomBoolean(){
+    public static boolean getRandomBoolean(){
         return new Random().nextBoolean();
     }
 
 
     // JSON
 
-    static void writeJson(OutputStream out, Object o){
+    public static void writeJson(OutputStream out, Object o){
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writeValue(out, o);
@@ -74,7 +80,7 @@ class Utils {
         }
     }
 
-    static FeatureLayer[] getFeatureLayers(){
+    public static FeatureLayer[] getFeatureLayers(){
         FeatureLayer[]layers = null;
 
         try {

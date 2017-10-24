@@ -14,3 +14,4 @@ cvplayground.iml
 lib/
 out/
 target/
+/stash/

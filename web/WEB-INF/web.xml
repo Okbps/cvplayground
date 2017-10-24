@@ -6,7 +6,7 @@
 
     <servlet>
         <servlet-name>Upload</servlet-name>
-        <servlet-class>UploadController</servlet-class>
+        <servlet-class>web.UploadController</servlet-class>
     </servlet>
 
     <servlet-mapping>

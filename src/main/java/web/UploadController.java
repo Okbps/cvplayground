@@ -1,3 +1,11 @@
+package web;
+
+import model.FeatureLayer;
+import service.UploadService;
+import to.FeatureLayerTo;
+import to.PersonTo;
+import util.Util;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -11,39 +19,35 @@ maxRequestSize = 1024*1024*50)
 public class UploadController extends HttpServlet{
     private UploadService service;
     private String lastSource;
-    private String[]fileNames;
+    private String fileName;
 
     @Override
     public void init() throws ServletException {
         service = new UploadService();
         lastSource = "";
-        fileNames = new String[2];
-
-        fileNames[0] = "";
-        fileNames[1] = "";
+        fileName = "";
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         InputStream is = req.getPart("sampleFile").getInputStream();
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Utils.copy(is, buffer);
+        Util.copy(is, buffer);
         buffer.flush();
         buffer.close();
 
         String submittedSource = req.getPart("sampleFile").getSubmittedFileName();
 
         if(!submittedSource.equals(lastSource)) {
-            fileNames[0] = "";
-            fileNames[1] = "";
+            fileName = Util.getRandomName("images/person/", "jpg");;
             lastSource = submittedSource;
         }
 
-        fileNames[1] = service.generateAvatarByConfig(fileNames[1]);
+        PersonTo person = service.generateAvatarByConfig((String) fileName);
 
         OutputStream out = resp.getOutputStream();
 
-        Utils.writeJson(out, fileNames);
+        Util.writeJson(out, person);
 
         out.flush();
         out.close();
@@ -66,11 +70,11 @@ public class UploadController extends HttpServlet{
     }
 
     private void doGetImage(HttpServletResponse resp, String imgName) throws IOException {
-        String fileName = Utils.getResourcePath("")+imgName;
+        String fileName = Util.getResourcePath("")+imgName;
         OutputStream out = resp.getOutputStream();
 
         resp.setContentType(getServletContext().getMimeType(fileName));
-        long fileSize = Utils.copy(new FileInputStream(fileName), out);
+        long fileSize = Util.copy(new FileInputStream(fileName), out);
         resp.setContentLength((int) fileSize);
 
         out.flush();
@@ -78,16 +82,16 @@ public class UploadController extends HttpServlet{
     }
 
     private void doGetJson(HttpServletResponse resp, String imgName) throws IOException {
-        FeatureLayer[]layers = Utils.getFeatureLayers();
-        FeatureLayerDTO[]dtos = new FeatureLayerDTO[layers.length];
+        FeatureLayer[]layers = Util.getFeatureLayers();
+        FeatureLayerTo[]dtos = new FeatureLayerTo[layers.length];
 
         for (int i = 0; i < layers.length; i++) {
-            dtos[i] = new FeatureLayerDTO(layers[i]);
+            dtos[i] = new FeatureLayerTo(layers[i]);
         }
 
         OutputStream out = resp.getOutputStream();
 
-        Utils.writeJson(out, dtos);
+        Util.writeJson(out, dtos);
 
         out.flush();
         out.close();
