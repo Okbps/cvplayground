@@ -65,7 +65,7 @@ public class UploadController extends HttpServlet{
         }
 
         if(jsonName!=null){
-            doGetJson(resp, imgName);
+            doGetJson(resp, jsonName);
         }
     }
 
