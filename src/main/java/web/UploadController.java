@@ -11,7 +11,9 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.*;
+import java.util.Enumeration;
 
 @MultipartConfig(fileSizeThreshold = 1024*1024*2,
 maxFileSize = 1024*1024*10,
@@ -30,13 +32,31 @@ public class UploadController extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        InputStream is = req.getPart("sampleFile").getInputStream();
+        String contentType = req.getHeader("Content-type");
+
+        if(contentType.contains("multipart/form-data")){
+            Part sampleFile = req.getPart("sampleFile");
+
+            if(sampleFile!=null){
+                doPostSampleFile(req, resp, sampleFile);
+            }
+        }else {
+//            if(contentType.contains("application/json"))
+            Enumeration<String>params = req.getParameterNames();
+//            if (selectedFeatures != null) {
+//                doPostSelectedFeatures(req, resp, selectedFeatures);
+//            }
+        }
+    }
+
+    private void doPostSampleFile(HttpServletRequest req, HttpServletResponse resp, Part sampleFile) throws IOException {
+        InputStream is = sampleFile.getInputStream();
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         Util.copy(is, buffer);
         buffer.flush();
         buffer.close();
 
-        String submittedSource = req.getPart("sampleFile").getSubmittedFileName();
+        String submittedSource = sampleFile.getSubmittedFileName();
 
         if(!submittedSource.equals(lastSource)) {
             fileName = Util.getRandomName("images/person/", "jpg");;
@@ -53,6 +73,10 @@ public class UploadController extends HttpServlet{
         out.close();
 
         resp.setContentType("application/json");
+    }
+
+    private void doPostSelectedFeatures(HttpServletRequest req, HttpServletResponse resp, Part selectedFeatures){
+
     }
 
     @Override

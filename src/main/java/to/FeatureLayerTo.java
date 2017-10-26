@@ -5,11 +5,13 @@ import util.Util;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FeatureLayerTo {
     private String path;
     private String alias;
-    private String[]fileNames;
+    private List<String> fileNames;
 
     public FeatureLayerTo(FeatureLayer layer) {
         this.path = layer.getPath();
@@ -19,7 +21,11 @@ public class FeatureLayerTo {
 
         fileNames = Arrays.stream(files)
                 .map(File::getName)
-                .toArray(String[]::new);
+                .collect(Collectors.toList());
+
+        if(layer.getAvailability()<100){
+            fileNames.add("blank.png");
+        }
     }
 
     public String getPath() {
@@ -30,7 +36,7 @@ public class FeatureLayerTo {
         return alias;
     }
 
-    public String[] getFileNames() {
+    public List<String> getFileNames() {
         return fileNames;
     }
 }

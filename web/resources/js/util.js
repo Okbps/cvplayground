@@ -1,10 +1,6 @@
 var featureLayers;
 var selectedFeatures;
 
-$(function () {
-    $.get("upload?json", updateFeatureLayers);
-});
-
 function updateFeatureLayers(data) {
     featureLayers = $.parseJSON(data);
     $('#featureLayers')
@@ -19,6 +15,8 @@ function updateFeatureLayers(data) {
                 text: item.alias
             }))
     });
+
+    updateFeatureItems(0);
 }
 
 function updateFeatureItems(layersInd){
@@ -36,16 +34,16 @@ function updateFeatureItems(layersInd){
                 }))
         });
 
-    var selectedItem = selectedFeatures[featureLayers[layersInd].path];
+    if(selectedFeatures!==undefined) {
+        var selectedItem = selectedFeatures[featureLayers[layersInd].path];
 
-    $('#featureItems option[value="'+selectedItem+'"]')
-        .prop('selected', true);
+        $('#featureItems').find('option[value="' + selectedItem + '"]')
+            .prop('selected', true);
+    };
 }
 
-function  performSubmit(input){
+function performUpload(input){
     form_data = new FormData(document.getElementById("fileForm"));
-
-    var x = new XMLHttpRequest();
 
     $.ajax({
         url: "/upload",
@@ -64,6 +62,18 @@ function  performSubmit(input){
     });
 }
 
+function performSubmit(input){
+    $.ajax({
+        url: "/upload",
+        type: "POST",
+        data: JSON.stringify(selectedFeatures),
+        async:true,
+        // contentType: 'application/json',
+        success: function(data){
+        }
+    });
+}
+
 function readURL(input) {
 
     if (input.files && input.files[0]) {
@@ -76,11 +86,3 @@ function readURL(input) {
         reader.readAsDataURL(input.files[0]);
     };
 }
-
-$("#sampleFile").change(function(){
-    readURL(this);
-});
-
-$("#featureLayers").change(function () {
-    updateFeatureItems(this.selectedIndex);
-});

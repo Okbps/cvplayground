@@ -9,7 +9,7 @@
     <label for="sampleFile">Select image</label>
     <input id="sampleFile" name="sampleFile" type="file" />
 
-    <input id="uploadBtn" type="button" value="Upload" onClick="performSubmit();">
+    <input id="uploadBtn" type="button" value="Upload">
     <br>
 
     <div class="divTable">
@@ -45,7 +45,7 @@
                     <button type="button">></button>
                     <br>
                     <br>
-                    <input id="submitBtn" type="button" value="Submit" onClick="">
+                    <input id="submitBtn" type="button" value="Submit">
                 </div>
             </div>
         </div>
