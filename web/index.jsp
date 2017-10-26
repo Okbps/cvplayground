@@ -34,15 +34,13 @@
                     </select>
                     <br>
 
-                    <button type="button"><</button>
+                    <%--<button type="button"><</button>--%>
 
-                    <label id="featureItem">
-                        <select id="featureItems">
-                            <option>no items</option>
-                        </select>
-                    </label>
+                    <select id="featureItems">
+                        <option>no items</option>
+                    </select>
 
-                    <button type="button">></button>
+                    <%--<button type="button">></button>--%>
                     <br>
                     <br>
                     <input id="submitBtn" type="button" value="Submit">

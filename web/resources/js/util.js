@@ -1,5 +1,5 @@
+var person;
 var featureLayers;
-var selectedFeatures;
 
 function updateFeatureLayers(data) {
     featureLayers = $.parseJSON(data);
@@ -34,12 +34,16 @@ function updateFeatureItems(layersInd){
                 }))
         });
 
-    if(selectedFeatures!==undefined) {
-        var selectedItem = selectedFeatures[featureLayers[layersInd].path];
+    if(person!==undefined) {
+        var selectedItem = person['selectedFeatures'][featureLayers[layersInd].path];
 
         $('#featureItems').find('option[value="' + selectedItem + '"]')
             .prop('selected', true);
     };
+}
+
+function updatePerson(layersInd, itemsInd){
+    person['selectedFeatures'][featureLayers[layersInd].path] = featureLayers[layersInd].fileNames[itemsInd];
 }
 
 function performUpload(input){
@@ -55,9 +59,8 @@ function performUpload(input){
         async:true,
         datatype: 'image/jpeg',
         success: function(data){
-            var arr = $.parseJSON(data);
-            $('#avImage').attr('src', '/upload?img='+arr['fileName']+"&timestamp=" + new Date().getTime());
-            selectedFeatures = arr['selectedFeatures'];
+            person = $.parseJSON(data);
+            $('#avImage').attr('src', '/upload?img='+person['fileName']+"&timestamp=" + new Date().getTime());
         }
     });
 }
@@ -66,10 +69,11 @@ function performSubmit(input){
     $.ajax({
         url: "/upload",
         type: "POST",
-        data: JSON.stringify(selectedFeatures),
+        data: JSON.stringify(person),
         async:true,
-        // contentType: 'application/json',
+        contentType: 'application/json',
         success: function(data){
+            $('#avImage').attr('src', '/upload?img='+person['fileName']+"&timestamp=" + new Date().getTime());
         }
     });
 }

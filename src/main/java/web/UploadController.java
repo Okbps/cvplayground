@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.*;
-import java.util.Enumeration;
 
 @MultipartConfig(fileSizeThreshold = 1024*1024*2,
 maxFileSize = 1024*1024*10,
@@ -31,6 +30,20 @@ public class UploadController extends HttpServlet{
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String imgName = req.getParameter("img");
+        String jsonName = req.getParameter("json");
+
+        if(imgName!=null){
+            doGetImage(resp, imgName);
+        }
+
+        if(jsonName!=null){
+            doGetJson(resp, jsonName);
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-type");
 
@@ -40,14 +53,13 @@ public class UploadController extends HttpServlet{
             if(sampleFile!=null){
                 doPostSampleFile(req, resp, sampleFile);
             }
-        }else {
-//            if(contentType.contains("application/json"))
-            Enumeration<String>params = req.getParameterNames();
-//            if (selectedFeatures != null) {
-//                doPostSelectedFeatures(req, resp, selectedFeatures);
-//            }
+        }else if(contentType.contains("application/json")) {
+            doPostSelectedFeatures(req, resp);
         }
     }
+
+
+    // Request handlers
 
     private void doPostSampleFile(HttpServletRequest req, HttpServletResponse resp, Part sampleFile) throws IOException {
         InputStream is = sampleFile.getInputStream();
@@ -75,22 +87,10 @@ public class UploadController extends HttpServlet{
         resp.setContentType("application/json");
     }
 
-    private void doPostSelectedFeatures(HttpServletRequest req, HttpServletResponse resp, Part selectedFeatures){
-
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String imgName = req.getParameter("img");
-        String jsonName = req.getParameter("json");
-
-        if(imgName!=null){
-            doGetImage(resp, imgName);
-        }
-
-        if(jsonName!=null){
-            doGetJson(resp, jsonName);
-        }
+    private void doPostSelectedFeatures(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        InputStream in = req.getInputStream();
+        PersonTo person = Util.readJson(in, PersonTo.class);
+        in.close();
     }
 
     private void doGetImage(HttpServletResponse resp, String imgName) throws IOException {

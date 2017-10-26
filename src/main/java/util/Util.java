@@ -11,6 +11,8 @@ import java.util.Random;
 
 public class Util {
 
+    // Files
+
     public static long copy(InputStream source, OutputStream sink) throws IOException
     {
         long nread = 0L;
@@ -21,20 +23,6 @@ public class Util {
             nread += n;
         }
         return nread;
-    }
-
-    public static String getRandomName(String prefix, String ext){
-        final SecureRandom random = new SecureRandom();
-
-        long n = random.nextLong();
-        if (n == Long.MIN_VALUE) {
-            n = 0;      // corner case
-        } else {
-            n = Math.abs(n);
-        }
-
-        return prefix + Long.toString(n) + (ext.isEmpty() ? "" : ".") + ext;
-
     }
 
     public static String getFileExtension(String name) {
@@ -52,6 +40,23 @@ public class Util {
     public static File[] getFiles(String folderPath){
         File folder = new File(folderPath);
         return folder.listFiles();
+    }
+
+
+    // Randoms
+
+    public static String getRandomName(String prefix, String ext){
+        final SecureRandom random = new SecureRandom();
+
+        long n = random.nextLong();
+        if (n == Long.MIN_VALUE) {
+            n = 0;      // corner case
+        } else {
+            n = Math.abs(n);
+        }
+
+        return prefix + Long.toString(n) + (ext.isEmpty() ? "" : ".") + ext;
+
     }
 
     public static File getRandomFile(String folderPath){
@@ -77,6 +82,16 @@ public class Util {
             mapper.writeValue(out, o);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static <T> T readJson(InputStream in, Class<T> clazz) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(in, clazz);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
