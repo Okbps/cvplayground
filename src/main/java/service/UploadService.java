@@ -1,13 +1,10 @@
 package service;
 
-import model.FeatureLayer;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
-import to.PersonTo;
+import model.Person;
 import util.Util;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 public class UploadService {
@@ -49,33 +46,16 @@ public class UploadService {
         return dest;
     }
 
-    public PersonTo generateAvatarByConfig(String fileName){
-        FeatureLayer[]layers = Util.getFeatureLayers();
-        Map<String, String>selectedFeatures = new HashMap<>();
-
+    public void generatePersonImage(Person person){
         Mat mResult = new Mat(new Size(1024, 1024), CvType.CV_8UC(3), new Scalar(255, 255, 255));
 
-        for (FeatureLayer layer : layers) {
-            if(layer.getAvailability() >= Util.getRandomInt(100)){
+        for(Map.Entry<String, String>entry: person.getSelectedFeatures().entrySet()) {
+            String layerPath = Util.getResourcePath("images/person/"+entry.getKey()+"/"+entry.getValue());
 
-                File layerFile = Util.getRandomFile(
-                        Util.getResourcePath(
-                                "images/person/"+layer.getPath()
-                        ));
-
-                Mat mLayer = Imgcodecs.imread(layerFile.getAbsolutePath(), Imgcodecs.IMREAD_UNCHANGED);
-                mResult = overlayImage(mResult, mLayer, new Point());
-
-                selectedFeatures.put(layer.getPath(), layerFile.getName());
-            }
+            Mat mLayer = Imgcodecs.imread(layerPath, Imgcodecs.IMREAD_UNCHANGED);
+            mResult = overlayImage(mResult, mLayer, new Point());
         }
 
-        Imgcodecs.imwrite(Util.getResourcePath(fileName), mResult);
-
-        PersonTo person = new PersonTo();
-        person.setFileName(fileName);
-        person.setSelectedFeatures(selectedFeatures);
-
-        return person;
+        Imgcodecs.imwrite(Util.getResourcePath(person.getFileName()), mResult);
     }
 }

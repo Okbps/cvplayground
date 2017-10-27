@@ -1,9 +1,10 @@
 package web;
 
 import model.FeatureLayer;
+import model.PersonFactory;
 import service.UploadService;
 import to.FeatureLayerTo;
-import to.PersonTo;
+import model.Person;
 import util.Util;
 
 import javax.servlet.ServletException;
@@ -75,7 +76,9 @@ public class UploadController extends HttpServlet{
             lastSource = submittedSource;
         }
 
-        PersonTo person = service.generateAvatarByConfig((String) fileName);
+        Person person = PersonFactory.createRandom();
+        person.setFileName(fileName);
+        service.generatePersonImage(person);
 
         OutputStream out = resp.getOutputStream();
 
@@ -89,8 +92,10 @@ public class UploadController extends HttpServlet{
 
     private void doPostSelectedFeatures(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         InputStream in = req.getInputStream();
-        PersonTo person = Util.readJson(in, PersonTo.class);
+        Person person = Util.readJson(in, Person.class);
         in.close();
+
+        service.generatePersonImage(person);
     }
 
     private void doGetImage(HttpServletResponse resp, String imgName) throws IOException {
