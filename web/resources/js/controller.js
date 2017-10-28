@@ -15,9 +15,13 @@ $("#featureItems").change(function () {
 });
 
 $("#uploadBtn").click(function () {
-    performUpload(this);
+    uploadFileOnServer(this);
 });
 
-$("#submitBtn").click(function () {
-    performSubmit(this);
+$("#updatePersonBtn").click(function () {
+    updatePersonOnServer(this);
+});
+
+$("#updateSetBtn").click(function () {
+    updateTrainingSet(this);
 });

@@ -63,4 +63,8 @@ public class UploadService {
 
         Imgcodecs.imwrite(Util.getResourcePath(person.getFileName()), mResult);
     }
+
+    public void updateTrainingSet(String sampleFile, Map selectedFeatures){
+        //todo
+    }
 }

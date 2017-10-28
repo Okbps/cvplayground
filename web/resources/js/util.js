@@ -46,7 +46,7 @@ function updatePerson(layersInd, itemsInd){
     person['selectedFeatures'][featureLayers[layersInd].path] = featureLayers[layersInd].fileNames[itemsInd];
 }
 
-function performUpload(input){
+function uploadFileOnServer(input){
     form_data = new FormData(document.getElementById("fileForm"));
 
     $.ajax({
@@ -65,15 +65,28 @@ function performUpload(input){
     });
 }
 
-function performSubmit(input){
+function updatePersonOnServer(input){
     $.ajax({
-        url: "/upload",
+        url: "/upload?updatePerson",
         type: "POST",
         data: JSON.stringify(person),
         async:true,
         contentType: 'application/json',
         success: function(data){
             $('#personImage').attr('src', '/upload?img='+person['fileName']+"&timestamp=" + new Date().getTime());
+        }
+    });
+}
+
+function updateTrainingSet(input){
+    $.ajax({
+        url: "/upload?updateSet",
+        type: "POST",
+        data: JSON.stringify(person['selectedFeatures']),
+        async:true,
+        contentType: 'application/json',
+        success: function(data){
+            alert("training set updated");
         }
     });
 }

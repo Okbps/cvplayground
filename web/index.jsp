@@ -40,7 +40,10 @@
                     <br>
                     <br>
 
-                    <input id="submitBtn" type="button" value="Submit">
+                    <input id="updatePersonBtn" type="button" value="Update person">
+                    <br>
+                    <br>
+                    <input id="updateSetBtn" type="button" value="Update training set">
                 </div>
             </div>
         </div>
