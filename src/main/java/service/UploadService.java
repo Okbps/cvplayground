@@ -50,7 +50,12 @@ public class UploadService {
         Mat mResult = new Mat(new Size(1024, 1024), CvType.CV_8UC(3), new Scalar(255, 255, 255));
 
         for(Map.Entry<String, String>entry: person.getSelectedFeatures().entrySet()) {
-            String layerPath = Util.getResourcePath("images/person/"+entry.getKey()+"/"+entry.getValue());
+            String layerPath;
+            if(entry.getValue().equals("blank.png")){
+                layerPath = Util.getResourcePath("images/person/" + entry.getValue());
+            }else {
+                layerPath = Util.getResourcePath("images/person/" + entry.getKey() + "/" + entry.getValue());
+            }
 
             Mat mLayer = Imgcodecs.imread(layerPath, Imgcodecs.IMREAD_UNCHANGED);
             mResult = overlayImage(mResult, mLayer, new Point());

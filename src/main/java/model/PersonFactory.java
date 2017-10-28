@@ -18,6 +18,8 @@ public class PersonFactory {
                         );
 
                 selectedFeatures.put(layer.getPath(), layerFile.getName());
+            }else{
+                selectedFeatures.put(layer.getPath(), "blank.png");
             }
         }
 
