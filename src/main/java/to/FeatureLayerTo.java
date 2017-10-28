@@ -17,7 +17,7 @@ public class FeatureLayerTo {
         this.path = layer.getPath();
         this.alias = layer.getAlias();
 
-        File[] files = Util.getFiles(Util.getResourcePath("images/person/"+layer.getPath()));
+        File[] files = Util.getFiles(Util.getResourcePath("images/person/layers/"+layer.getPath()));
 
         fileNames = Arrays.stream(files)
                 .map(File::getName)

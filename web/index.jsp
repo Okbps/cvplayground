@@ -24,7 +24,7 @@
         <div class="divTableBody">
             <div class="divTableRow">
                 <div class="divTableCell">
-                    <img id="avImage" alt="avatar image"/>
+                    <img id="personImage" alt="person image"/>
                 </div>
 
                 <div class="divTableCell" style="vertical-align: top">
@@ -34,15 +34,12 @@
                     </select>
                     <br>
 
-                    <%--<button type="button"><</button>--%>
-
                     <select id="featureItems">
                         <option>no items</option>
                     </select>
+                    <br>
+                    <br>
 
-                    <%--<button type="button">></button>--%>
-                    <br>
-                    <br>
                     <input id="submitBtn" type="button" value="Submit">
                 </div>
             </div>

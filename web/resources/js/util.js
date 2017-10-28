@@ -60,7 +60,7 @@ function performUpload(input){
         datatype: 'image/jpeg',
         success: function(data){
             person = $.parseJSON(data);
-            $('#avImage').attr('src', '/upload?img='+person['fileName']+"&timestamp=" + new Date().getTime());
+            $('#personImage').attr('src', '/upload?img='+person['fileName']+"&timestamp=" + new Date().getTime());
         }
     });
 }
@@ -73,7 +73,7 @@ function performSubmit(input){
         async:true,
         contentType: 'application/json',
         success: function(data){
-            $('#avImage').attr('src', '/upload?img='+person['fileName']+"&timestamp=" + new Date().getTime());
+            $('#personImage').attr('src', '/upload?img='+person['fileName']+"&timestamp=" + new Date().getTime());
         }
     });
 }

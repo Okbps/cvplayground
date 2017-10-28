@@ -21,13 +21,13 @@ maxRequestSize = 1024*1024*50)
 public class UploadController extends HttpServlet{
     private UploadService service;
     private String lastSource;
-    private String fileName;
+    private String personFileName;
 
     @Override
     public void init() throws ServletException {
         service = new UploadService();
         lastSource = "";
-        fileName = "";
+        personFileName = "";
     }
 
     @Override
@@ -63,21 +63,19 @@ public class UploadController extends HttpServlet{
     // Request handlers
 
     private void doPostSampleFile(HttpServletRequest req, HttpServletResponse resp, Part sampleFile) throws IOException {
-        InputStream is = sampleFile.getInputStream();
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Util.copy(is, buffer);
-        buffer.flush();
-        buffer.close();
-
         String submittedSource = sampleFile.getSubmittedFileName();
 
         if(!submittedSource.equals(lastSource)) {
-            fileName = Util.getRandomName("images/person/", "jpg");;
+            InputStream is = sampleFile.getInputStream();
+            Util.saveFile(is, Util.getResourcePath("images/uploaded/" + submittedSource));
+            is.close();
+
+            personFileName = Util.getRandomName("images/person/generated/", "jpg");;
             lastSource = submittedSource;
         }
 
         Person person = PersonFactory.createRandom();
-        person.setFileName(fileName);
+        person.setFileName(personFileName);
         service.generatePersonImage(person);
 
         OutputStream out = resp.getOutputStream();

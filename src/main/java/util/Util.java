@@ -42,6 +42,19 @@ public class Util {
         return folder.listFiles();
     }
 
+    public static void saveFile(InputStream source, String fileName){
+        File file = new File(fileName);
+        try {
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream out = new FileOutputStream(file);
+            copy(source, out);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // Randoms
 
@@ -100,7 +113,7 @@ public class Util {
 
         try {
             byte[] jsonData = Files.readAllBytes(
-                    Paths.get(getResourcePath("images/person/config.json")
+                    Paths.get(getResourcePath("images/person/layers/layers.json")
                     ));
             ObjectMapper mapper = new ObjectMapper();
             layers = mapper.readValue(jsonData, FeatureLayer[].class);

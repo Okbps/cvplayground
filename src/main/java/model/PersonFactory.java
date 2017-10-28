@@ -14,7 +14,7 @@ public class PersonFactory {
             if(layer.getAvailability() >= Util.getRandomInt(100)){
 
                 File layerFile = Util.getRandomFile(
-                        Util.getResourcePath("images/person/"+layer.getPath())
+                        Util.getResourcePath("images/person/layers/"+layer.getPath())
                         );
 
                 selectedFeatures.put(layer.getPath(), layerFile.getName());

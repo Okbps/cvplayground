@@ -52,9 +52,9 @@ public class UploadService {
         for(Map.Entry<String, String>entry: person.getSelectedFeatures().entrySet()) {
             String layerPath;
             if(entry.getValue().equals("blank.png")){
-                layerPath = Util.getResourcePath("images/person/" + entry.getValue());
+                layerPath = Util.getResourcePath("images/person/layers/" + entry.getValue());
             }else {
-                layerPath = Util.getResourcePath("images/person/" + entry.getKey() + "/" + entry.getValue());
+                layerPath = Util.getResourcePath("images/person/layers/" + entry.getKey() + "/" + entry.getValue());
             }
 
             Mat mLayer = Imgcodecs.imread(layerPath, Imgcodecs.IMREAD_UNCHANGED);
